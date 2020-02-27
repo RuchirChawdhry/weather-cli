@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 import attr
 from click import prompt
 from prettytable import PrettyTable
 import questionary
 
-from weather_terminal_app import models
-from weather_terminal_app.controllers import OpenWeather
+from weather_terminal_app import model
+from weather_terminal_app.controller import OpenWeather
 
 
 @attr.s
@@ -39,13 +40,13 @@ class Prompts(object):
 @attr.s
 class TodaysWeather(object):
     def display(self):
-        config = models.Config()
+        config = model.Config()
 
         prompts = Prompts()
         prompts = prompts.initial_prompt()
         city, country = prompts
 
-        w = OpenWeather(city=city, country=country, key=config.key())
+        w = OpenWeather(city=city)
 
         table = PrettyTable()
         table.field_names = ["Current", "Min.", "Max.", "Atm. Pres.", "Wind Speed"]

@@ -6,11 +6,11 @@
 # ruchirchawdhry.com
 # linkedin.com/in/RuchirChawdhry
 
-from weather_terminal_app import controllers
-from weather_terminal_app import views
+from weather_terminal_app import controller
+from weather_terminal_app import view
 
 if __name__ == "__main__":
-    w = views.TodaysWeather()
+    w = view.TodaysWeather()
     w.display()
-    table = controllers.OpenWeather()
+    table = controller.OpenWeather()
     print(table)

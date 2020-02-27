@@ -7,10 +7,7 @@ from datetime import datetime
 from cnamedtuple import namedtuple as cnamedtuple
 import requests
 from requests_cache import install_cache
-from weather_terminal_app import model
-
-
-c = model.load_config(model.DEFAULT_PATH["unix"])
+from weather_terminal_app.model import Config
 
 
 class API:
@@ -18,10 +15,15 @@ class API:
 
 
 class OpenWeather:
-    def __init__(self, endpoint, units, params):
-        self.endpoint = c[endpoint]
-        self.units = c[units]
-        self.params = {"city": c["city"], "appid": c["key"], "units": c["units"]}
+    def __init__(self, city="Mumbai"):
+        conf = Config()
+        self.endpoint = conf["endpoints"]["openweather"]
+        self.units = conf["units"]
+        self.params = {
+            "city": city,
+            "appid": conf["api_keys"][0],
+            "units": conf["units"],
+        }
 
     def __repr__(self):
         pass
@@ -108,10 +110,22 @@ class OpenWeather:
         r = self._json()
         return timedelta(seconds=r.get("timezone"))
 
+    def __add__(self, other):
+        pass
 
-class DarkSkyAPI:
+    def __radd__(self, other):
+        return OpenWeather.__add__(self, other)
+
+
+class DarkSky:
     def __str__(self):
         pass
 
     def __repr__(self):
         pass
+
+    def __add__(self, other):
+        pass
+
+    def __radd__(self, other):
+        return DarkSky.__add__(self, other)
