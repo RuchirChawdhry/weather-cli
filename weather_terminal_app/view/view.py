@@ -6,8 +6,8 @@ from click import prompt
 from prettytable import PrettyTable
 import questionary
 
-from weather_terminal_app import model
-from weather_terminal_app.controller import OpenWeather
+from weather_terminal_app.controller.controller import OpenWeather
+from weather_terminal_app.model.model import Config
 
 
 @attr.s
@@ -38,9 +38,9 @@ class Prompts(object):
 
 
 @attr.s
-class TodaysWeather(object):
+class TodaysWeather:
     def display(self):
-        config = model.Config()
+        config = Config()
 
         prompts = Prompts()
         prompts = prompts.initial_prompt()
@@ -49,10 +49,10 @@ class TodaysWeather(object):
         w = OpenWeather(city=city)
 
         table = PrettyTable()
-        table.field_names = ["Current", "Min.", "Max.", "Atm. Pres.", "Wind Speed"]
+        table.field_names = ["Feels Like", "Min.", "Max.", "Atm. Pres.", "Wind Speed"]
         table.add_row(
             [
-                str(w.weather.now) + "°C",
+                str(w.weather.feels) + "°C",
                 str(w.weather.min) + "°C",
                 str(w.weather.max) + "°C",
                 w.weather.pressure,
@@ -63,5 +63,5 @@ class TodaysWeather(object):
 
 
 @attr.s
-class HistoricalWeather(object):
+class HistoricalWeather:
     pass

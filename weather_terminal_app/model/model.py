@@ -23,7 +23,10 @@ DEFAULTS = {
         "darksky": None,
     },
     "units": "metric",
-    "api_keys": ["", ""],  # 1st openweather, 2nd darksky
+    "api_keys": [
+        "d7a597fef845c4a34a8604a08a589a15",
+        "",
+    ],  # 1st openweather, 2nd darksky
     "city": "Jaisalmer",
     "state": "Rajasthan",  # equivalent to province
     "country": "India",
