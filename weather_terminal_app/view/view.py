@@ -10,8 +10,22 @@ from weather_terminal_app.controller.controller import OpenWeather
 from weather_terminal_app.model.model import Config
 
 
+class TableGen:
+    def __init__(self, field_names=[], rows=[], printout=True):
+        self.table = PrettyTable()
+        self.table.field_names = field_names
+        self.table.add_row(rows)
+        if printout is True:
+            print(self.table)
+        else:
+            return self.table
+
+    def __len__(self):
+        return len(self.table.field_names)
+
+
 @attr.s
-class Prompts(object):
+class Prompts:
     city = attr.ib(default=None)
     state = attr.ib(default=None)
     province = attr.ib(default=None)
@@ -38,7 +52,7 @@ class Prompts(object):
 
 
 @attr.s
-class TodaysWeather:
+class PrettyWeather:
     def display(self):
         config = Config()
 
@@ -62,6 +76,6 @@ class TodaysWeather:
         print(table)
 
 
-@attr.s
-class HistoricalWeather:
+class Forecast:
+
     pass
