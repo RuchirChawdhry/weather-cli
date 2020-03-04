@@ -43,6 +43,10 @@ class WeatherApp(cli.Application):
     def api(self, api_key):
         pass
 
+    @cli.switch("--table")
+    def tabular(self):
+        pass
+
     def main(self):
         if self.city or self.cntry:
             print(self.city)

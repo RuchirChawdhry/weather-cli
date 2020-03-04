@@ -51,7 +51,6 @@ class Prompts:
         return questionary.text("Enter your DarkSky API Key: ")
 
 
-@attr.s
 class PrettyWeather:
     def display(self):
         config = Config()
