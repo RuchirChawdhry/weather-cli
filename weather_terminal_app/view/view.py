@@ -1,16 +1,31 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 import attr
 from click import prompt
 from prettytable import PrettyTable
 import questionary
 
-from weather_terminal_app import models
-from weather_terminal_app.controllers import OpenWeather
+from weather_terminal_app.controller.controller import OpenWeather
+from weather_terminal_app.model.model import Config
+
+
+class TableGen:
+    def __init__(self, field_names=[], rows=[], printout=True):
+        self.table = PrettyTable()
+        self.table.field_names = field_names
+        self.table.add_row(rows)
+        if printout is True:
+            print(self.table)
+        else:
+            return self.table
+
+    def __len__(self):
+        return len(self.table.field_names)
 
 
 @attr.s
-class Prompts(object):
+class Prompts:
     city = attr.ib(default=None)
     state = attr.ib(default=None)
     province = attr.ib(default=None)
@@ -36,22 +51,21 @@ class Prompts(object):
         return questionary.text("Enter your DarkSky API Key: ")
 
 
-@attr.s
-class TodaysWeather(object):
+class PrettyWeather:
     def display(self):
-        config = models.Config()
+        config = Config()
 
         prompts = Prompts()
         prompts = prompts.initial_prompt()
         city, country = prompts
 
-        w = OpenWeather(city=city, country=country, key=config.key())
+        w = OpenWeather(city=city)
 
         table = PrettyTable()
-        table.field_names = ["Current", "Min.", "Max.", "Atm. Pres.", "Wind Speed"]
+        table.field_names = ["Feels Like", "Min.", "Max.", "Atm. Pres.", "Wind Speed"]
         table.add_row(
             [
-                str(w.weather.now) + "°C",
+                str(w.weather.feels) + "°C",
                 str(w.weather.min) + "°C",
                 str(w.weather.max) + "°C",
                 w.weather.pressure,
@@ -61,6 +75,6 @@ class TodaysWeather(object):
         print(table)
 
 
-@attr.s
-class HistoricalWeather(object):
+class Forecast:
+
     pass
