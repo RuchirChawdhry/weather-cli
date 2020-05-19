@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from datetime import timedelta
-from datetime import datetime
+from datetime import datetime, timedelta
 
-from cnamedtuple import namedtuple as cnamedtuple
-import requests
+import requests as req
+from cnamedtuple import namedtuple
 from requests_cache import install_cache
-from weather_terminal_app.model.model import Config
+
+from model.model import Config
 
 
 class API:
@@ -19,7 +19,8 @@ class OpenWeather:
         conf = Config()
         self.endpoint = conf["endpoints"]["openweather"]
         self.units = conf["units"]
-        self.params = {
+        self.session = req.Session()
+        self.session.params = {
             "q": city,
             "appid": conf["api_keys"][0],
             "units": conf["units"],
@@ -31,104 +32,81 @@ class OpenWeather:
     def __str__(self):
         pass
 
-    def _resp(self):
+    def _response(self):
         install_cache("cache", backend="sqlite", expire_after=180)
-        response = requests.get(url=self.endpoint, params=self.params)
         _json = self.__dict__
-        return response
+        return self.session.get(url=self.endpoint)
 
     @property
     def wind(self):
-        r = self._resp().json()
+        r = self._response().json()
         self.wind_speed, self.wind_deg = r.get("wind").values()
-        return cnamedtuple("wind", ["speed", "deg"])(self.wind_speed, self.wind_deg)
+        return namedtuple("wind", ["speed", "deg"])(self.wind_speed, self.wind_deg)
 
     def coords(self):
-        r = self._resp().json()
+        r = self._response().json()
         longitude, latitude = r.get("coord").values()
-        return cnamedtuple("coords", ["latitude", "longitude"])(latitude, longitude)
+        return namedtuple("coords", ["latitude", "longitude"])(latitude, longitude)
 
     @property
     def latitude(self):
-        r = self._resp().json()
+        r = self._response().json()
         return r.get("coord").get("latitude")
 
     @property
     def longitude(self):
-        r = self._resp().json()
+        r = self._response().json()
         return r.get("coord").get("longitude")
 
     @property
     def cloudcover(self):
-        r = self._resp().json()
+        r = self._response().json()
         return r.get("clouds").get("all")
 
     @property
     def weather(self):
-        r = self._resp().json()
+        r = self._response().json()
         d = r.pop("main")
         feels_like = d["feels_like"]
         humidity = d["humidity"]
-        return cnamedtuple("weather", ["feels", "min", "max", "humid", "pressure"])(
-            d["feels_like"], d["temp_min"], d["temp_max"], d["humidity"], d["pressure"]
+        return namedtuple("weather", ["feels", "min", "max", "humid", "pressure"])(
+            feels_like, d["temp_min"], d["temp_max"], humidity, d["pressure"]
         )
 
     @property
     def sunrise(self):
-        r = self._resp().json()
+        r = self._response().json()
         sunrise = datetime.fromtimestamp(r["sys"].get("sunrise")).strftime("%H:%M")
         return sunrise  # UTC
 
     @property
     def sunset(self):
-        r = self._resp().json()
+        r = self._response().json()
         sunset = datetime.fromtimestamp(r["sys"].get("sunset")).strftime("%H:%M")
         return sunset  # UTC
 
     @property
     def desc(self):
-        r = self._resp().json()
+        r = self._response().json()
         w_id, main, desc, icon = r.get("weather")[0].values()
-        return cnamedtuple("weather", ["id", "main", "desc", "icon"])(
+        return namedtuple("weather", ["id", "main", "desc", "icon"])(
             w_id, main, desc, icon
         )
 
     @property
     def visibility(self):
-        r = self._resp().json()
+        r = self._response().json()
         return r.get("visibility")
 
     def metadata(self):
-        r = self._resp().json()
-        _r = {
+        r = self._response().json()
+        return {
             key: r[key]
             for key in r.keys()
             - {"clouds", "weather", "main", "wind", "coord", "sys", "clouds"}
         }
-        visibility, name, base, timezone, id_, cod, dt = _r.values()
-        return _r
 
     @property
     def tzone(self):
-        r = self._resp().json()
+        r = self._response().json()
         return timedelta(seconds=r.get("timezone"))
-
-    def __add__(self, other):
-        pass
-
-    def __radd__(self, other):
-        return OpenWeather.__add__(self, other)
-
-
-class DarkSky:
-    def __str__(self):
-        pass
-
-    def __repr__(self):
-        pass
-
-    def __add__(self, other):
-        pass
-
-    def __radd__(self, other):
-        return DarkSky.__add__(self, other)

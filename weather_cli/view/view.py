@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import attr
 from click import prompt
 from prettytable import PrettyTable
-import questionary
 
-from weather_terminal_app.controller.controller import OpenWeather
-from weather_terminal_app.model.model import Config
+from controller.controller import OpenWeather
+from model.model import Config
 
 
 class TableGen:
@@ -15,6 +13,8 @@ class TableGen:
         self.table = PrettyTable()
         self.table.field_names = field_names
         self.table.add_row(rows)
+
+    def generate(self):
         if printout is True:
             print(self.table)
         else:
@@ -24,14 +24,14 @@ class TableGen:
         return len(self.table.field_names)
 
 
-@attr.s
-class Prompts:
-    city = attr.ib(default=None)
-    state = attr.ib(default=None)
-    province = attr.ib(default=None)
-    country = attr.ib(default=None)
-    postal_code = attr.ib(default=None)
-    provider = attr.ib(default="OpenWeather")
+class Interactive:
+    def __init__(self, city, state, province, country, postal_code, provider):
+        self.city = city
+        self.state = state
+        self.province = province
+        self.country = country
+        self.postal_code = postal_code
+        self.provider = provider
 
     def initial_prompt(self):
         self.city = prompt("City? ", default="New Delhi", type=str)
@@ -46,9 +46,6 @@ class Prompts:
 
     def openweatherkey(self):
         return questionary.text("Enter your OpenWeatherMap API Key: ")
-
-    def darkskykey(self):
-        return questionary.text("Enter your DarkSky API Key: ")
 
 
 class PrettyWeather:
@@ -76,5 +73,4 @@ class PrettyWeather:
 
 
 class Forecast:
-
     pass

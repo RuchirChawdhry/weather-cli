@@ -23,10 +23,7 @@ DEFAULTS = {
         "darksky": None,
     },
     "units": "metric",
-    "api_keys": [
-        "d7a597fef845c4a34a8604a08a589a15",
-        "",
-    ],  # 1st openweather, 2nd darksky
+    "api_keys": ["d7a597fef845c4a34a8604a08a589a15", ""],
     "city": "Jaisalmer",
     "state": "Rajasthan",  # equivalent to province
     "country": "India",
@@ -96,12 +93,3 @@ class Config(dict):
 
     def __repr__(self):
         pass
-
-    # def __len__(self, **kwargs):
-    #     return len(self._keys)
-
-    # def __getitem__(self, key):
-    #     return self.__dict__[key]
-
-    def __setitem__(self, key, val):
-        return self.__dict__[key] == val

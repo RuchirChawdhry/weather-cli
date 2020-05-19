@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from plumbum import cli
-from plumbum import colors
-from weather_terminal_app.controller.controller import OpenWeather
-from weather_terminal_app.model.model import Config
+from plumbum import cli, colors
 from prettytable import PrettyTable
-from weather_terminal_app.view.view import TableGen
+
+from view.view import TableGen
+from controller.controller import OpenWeather
 
 
 class WeatherApp(cli.Application):
     PROGNAME = "Clima"
-    VERSION = "0.01"
+    VERSION = "0.02"
     ALLOW_ABBREV = True
 
     @cli.switch(["-c", "--city"], str, requires=["--country"])
@@ -50,15 +49,3 @@ class WeatherApp(cli.Application):
     def main(self):
         if self.city or self.cntry:
             print(self.city)
-            # rows = [
-            #     str(w.weather.min) + "°C",
-            #     str(w.weather.max) + "°C",
-            #     str(w.weather.feels) + "°C",
-            #     w.weather.pressure,
-            #     w.wind.speed,
-            # ]
-
-            # field_names = ["Feels Like", "Min.", "Max.", "Atm. Pres.", "Wind Speed"]
-
-            # w = OpenWeather(city=city)
-            # TableGen(field_names=field_names, rows=rows)
